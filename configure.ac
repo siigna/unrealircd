@@ -472,6 +472,13 @@ configuration files])],
 	[AC_DEFINE_UNQUOTED([DEFAULT_PERMISSIONS], [0$withval], [The default permissions for configuration files. Set to 0 to prevent unrealircd from calling chmod() on the files.])],
 	[AC_DEFINE([DEFAULT_PERMISSIONS], [0600], [The default permissions for configuration files. Set to 0 to prevent unrealircd from calling chmod() on the files.])]) 
 
+dnl --with-rundir sets a base directory for all runtime paths (tmp/data/log/
+dnl cache/pid/ctl). Individual --with-* flags still override this.
+dnl Useful for test environments where a writable runtime dir is needed.
+AC_ARG_WITH(rundir, [AS_HELP_STRING([--with-rundir=path],[Set base dir for all runtime paths (tmp/data/log/cache/pid/ctl)])],
+	[rundir_base="$withval"],
+	[rundir_base="$HOME/unrealircd"])
+
 AC_ARG_WITH(bindir, [AS_HELP_STRING([--with-bindir=path],[Specify the directory for the unrealircd binary])],
 	[AC_DEFINE_UNQUOTED([BINDIR], ["$withval"], [Define the directory where the unrealircd binary is located])
 		BINDIR="$withval"],
@@ -506,26 +513,26 @@ AC_ARG_WITH(modulesdir, [AS_HELP_STRING([--with-modulesdir=path],[Specify the di
 AC_ARG_WITH(logdir, [AS_HELP_STRING([--with-logdir=path],[Specify the directory where log files are stored])],
 	[AC_DEFINE_UNQUOTED([LOGDIR], ["$withval"], [Define the location of the log files])
 		LOGDIR="$withval"],
-	[AC_DEFINE_UNQUOTED([LOGDIR], ["$HOME/unrealircd/logs"], [Define the location of the log files])
-		LOGDIR="$HOME/unrealircd/logs"])
+	[AC_DEFINE_UNQUOTED([LOGDIR], ["$rundir_base/logs"], [Define the location of the log files])
+		LOGDIR="$rundir_base/logs"])
 
 AC_ARG_WITH(cachedir, [AS_HELP_STRING([--with-cachedir=path],[Specify the directory where cached files are stored])],
 	[AC_DEFINE_UNQUOTED([CACHEDIR], ["$withval"], [Define the location of the cached remote include files])
 		CACHEDIR="$withval"],
-	[AC_DEFINE_UNQUOTED([CACHEDIR], ["$HOME/unrealircd/cache"], [Define the location of the cached remote include files])
-		CACHEDIR="$HOME/unrealircd/cache"])
+	[AC_DEFINE_UNQUOTED([CACHEDIR], ["$rundir_base/cache"], [Define the location of the cached remote include files])
+		CACHEDIR="$rundir_base/cache"])
 
 AC_ARG_WITH(tmpdir, [AS_HELP_STRING([--with-tmpdir=path],[Specify the directory where private temporary files are stored. Should not be readable or writable by others, so not /tmp!!])],
 	[AC_DEFINE_UNQUOTED([TMPDIR], ["$withval"], [Define the location of private temporary files])
 		TMPDIR="$withval"],
-	[AC_DEFINE_UNQUOTED([TMPDIR], ["$HOME/unrealircd/tmp"], [Define the location of private temporary files])
-		TMPDIR="$HOME/unrealircd/tmp"])
+	[AC_DEFINE_UNQUOTED([TMPDIR], ["$rundir_base/tmp"], [Define the location of private temporary files])
+		TMPDIR="$rundir_base/tmp"])
 
 AC_ARG_WITH(datadir, [AS_HELP_STRING([--with-datadir=path],[Specify the directory where permanent data is stored])],
 	[AC_DEFINE_UNQUOTED([PERMDATADIR], ["$withval"], [Define the location of permanent data files])
 		PERMDATADIR="$withval"],
-	[AC_DEFINE_UNQUOTED([DATADIR], ["$HOME/unrealircd/data"], [Define the location of permanent data files])
-		PERMDATADIR="$HOME/unrealircd/data"])
+	[AC_DEFINE_UNQUOTED([DATADIR], ["$rundir_base/data"], [Define the location of permanent data files])
+		PERMDATADIR="$rundir_base/data"])
 
 AC_ARG_WITH(docdir, [AS_HELP_STRING([--with-docdir=path],[Specify the directory where documentation is stored])],
 	[AC_DEFINE_UNQUOTED([DOCDIR], ["$withval"], [Define the location of the documentation])
@@ -536,14 +543,14 @@ AC_ARG_WITH(docdir, [AS_HELP_STRING([--with-docdir=path],[Specify the directory 
 AC_ARG_WITH(pidfile, [AS_HELP_STRING([--with-pidfile=path],[Specify the path of the pid file])],
 	[AC_DEFINE_UNQUOTED([PIDFILE], ["$withval"], [Define the path of the pid file])
 		PIDFILE="$withval"],
-	[AC_DEFINE_UNQUOTED([PIDFILE], ["$HOME/unrealircd/data/unrealircd.pid"], [Define the path of the pid file])
-		PIDFILE="$HOME/unrealircd/data/unrealircd.pid"])
+	[AC_DEFINE_UNQUOTED([PIDFILE], ["$rundir_base/data/unrealircd.pid"], [Define the path of the pid file])
+		PIDFILE="$rundir_base/data/unrealircd.pid"])
 
 AC_ARG_WITH(controlfile, [AS_HELP_STRING([--with-controlfile=path],[Specify the path of the control socket])],
 	[AC_DEFINE_UNQUOTED([CONTROLFILE], ["$withval"], [Define the path of the control socket])
 		CONTROLFILE="$withval"],
-	[AC_DEFINE_UNQUOTED([CONTROLFILE], ["$HOME/unrealircd/data/unrealircd.ctl"], [Define the path of the control socket])
-		CONTROLFILE="$HOME/unrealircd/data/unrealircd.ctl"])
+	[AC_DEFINE_UNQUOTED([CONTROLFILE], ["$rundir_base/data/unrealircd.ctl"], [Define the path of the control socket])
+		CONTROLFILE="$rundir_base/data/unrealircd.ctl"])
 
 dnl Ensure that this “feature” can be disabled as it makes it harder to package unrealircd.
 dnl Users have always been able to specify “./configure LDFLAGS=-Wl,-rpath,/path/to/blah”—binki
